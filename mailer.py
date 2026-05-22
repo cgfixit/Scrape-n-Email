@@ -20,12 +20,12 @@ from email.message import EmailMessage
 
 
 def _attach_file(msg, filepath):
-    """Attach a file to the email message if it exists.
+    #Attach a file to the email message if it exists.
 
-    Uses mimetypes to set the correct MIME type so email clients
-    render .txt and .csv attachments properly instead of treating
-    everything as a generic binary blob.
-    """
+    #Uses mimetypes to set the correct MIME type so email clients
+    #render .txt and .csv attachments properly instead of treating
+    #everything as a generic binary blob.
+    
     if not os.path.isfile(filepath):
         print(f"  Warning: attachment not found, skipping: {filepath}")
         return False
@@ -46,10 +46,10 @@ def _attach_file(msg, filepath):
 
 
 def send_email(subject, body, attachments):
-    """Send a single email with the given subject, body, and file attachments.
+    #Send a single email with the given subject, body, and file attachments.
 
-    Returns True on success, False on failure.
-    """
+    #Returns True on success, False on failure.
+    
     sender = os.environ.get("EMAIL_USER")
     password = os.environ.get("EMAIL_PASS")
     recipient = os.environ.get("EMAIL_RECIPIENT", sender)
@@ -89,11 +89,11 @@ def send_email(subject, body, attachments):
 
 
 def send_all():
-    """Send the daily news and jobs emails.
+    #Send the daily news and jobs emails.
 
-    This function fully replaces email.bat and sendEmail.exe.
-    Called from main.py after scraping completes.
-    """
+    #This function fully replaces email.bat and sendEmail.exe.
+    #Called from main.py after scraping completes.
+    
     datestamp = date.today().strftime("%m-%d-%Y")
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
