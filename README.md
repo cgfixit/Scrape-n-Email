@@ -1,6 +1,7 @@
 # Scrape-n-Email (Fixed & Modernized Edition)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![CI](https://github.com/CGFixIT/Scrape-n-Email/actions/workflows/ci.yml/badge.svg)](https://github.com/CGFixIT/Scrape-n-Email/actions/workflows/ci.yml)
 
 A small, dependency-light news + jobs scraper that emails its results as attachments.
 This is the **fixed and cleaned-up version** of the original repo with the following improvements:
