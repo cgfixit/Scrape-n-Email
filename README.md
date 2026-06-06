@@ -119,4 +119,3 @@ This fixed edition is what you would actually want to put in production / schedu
 *Christopher Grady · @cgfixit · cgfixit.com · June 2026 (fixed edition)*
 
 Original repo: https://github.com/CGFixIT/Scrape-n-Email
-This fixed version lives alongside as a clean reference implementation.
