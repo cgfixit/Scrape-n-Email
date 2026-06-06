@@ -1,4 +1,4 @@
-# Scrape-n-Email (Fixed & Modernized Edition)
+# Scrape-n-Email (Modernized Edition)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![CI](https://github.com/CGFixIT/Scrape-n-Email/actions/workflows/ci.yml/badge.svg)](https://github.com/CGFixIT/Scrape-n-Email/actions/workflows/ci.yml)
@@ -37,6 +37,21 @@ main.py
 
 > **About the `drudgeScraper` module name:** kept for historical reasons and because the Drudge parsing logic is still useful/standalone. The CSV code that used to live here is now centralized in `csv_helper.py`.
 
+### How I use it daily
+
+This is a lightweight personal automation that runs on my Windows machine every morning.
+
+- It triggers automatically at 7:00 AM via Windows Task Scheduler.
+- I get two separate emails:
+  - **Daily News** — Top RealClearPolitics headlines + a growing `RCPlinks.csv` archive of links.
+  - **Daily Jobs** — Atlanta Craigslist sysadmin / ops / infrastructure listings.
+- The jobs email lets me stay passively aware of the local market without manually checking Craigslist every day.
+- The news digest gives a quick, curated view of political and current events from a site whose aggregation style I like.
+- Over time the CSV becomes a simple personal searchable archive of interesting links.
+- When sites change layout I update the scraper; the offline tests in `test_scrapers.py` usually surface regressions quickly.
+
+It stays small and focused on my actual daily workflow rather than trying to be a general tool.
+
 ### Setup (same as before, plus new file)
 
 **Requirements:** Python 3.6+, `requests`, `beautifulsoup4`.
@@ -66,7 +81,7 @@ python -m unittest test_scrapers -v
 python main.py
 
 # scheduled (Windows example)
-schtasks /Create /SC DAILY /TN "ScrapeNEmail" /TR "C:\path\to\python.exe C:\path\to\main.py" /ST 07:00
+schtasks /Create /SC DAILY /TN "ScrapeNEmail" /TR "C:\\path\\to\\python.exe C:\\path\\to\\main.py" /ST 07:00
 ```
 
 ### File Overview (Fixed Version)
