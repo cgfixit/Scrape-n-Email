@@ -175,3 +175,93 @@ class RCPTests(unittest.TestCase):
             links,
         )
         self.assertEqual(len(headlines), 1)
+
+
+# ---------------------------------------------------------------------------
+# Edge-case / robustness tests added to complement the baseline tests above.
+# ---------------------------------------------------------------------------
+
+class CraigslistEdgeTests(unittest.TestCase):
+    def test_empty_html_returns_empty_list(self):
+        self.assertEqual(clistScraper.parse_jobs(""), [])
+
+    def test_none_html_returns_empty_list(self):
+        self.assertEqual(clistScraper.parse_jobs(None), [])
+
+    def test_limit_enforced(self):
+        jobs = clistScraper.parse_jobs(CRAIGSLIST_HTML, limit=1)
+        self.assertEqual(len(jobs), 1)
+
+    def test_missing_price_defaults_to_empty_string(self):
+        # The Linux Sysadmin fixture has no price node.
+        jobs = clistScraper.parse_jobs(CRAIGSLIST_HTML)
+        sysadmin = next(j for j in jobs if j["title"] == "Linux Sysadmin")
+        self.assertEqual(sysadmin["price"], "")
+
+    def test_duplicate_links_deduped(self):
+        # Inject a second copy of the first listing with the same href.
+        dup_html = CRAIGSLIST_HTML + """
+        <ul>
+          <li class="cl-static-search-result" title="Senior Network Engineer Dup">
+            <a href="https://atlanta.craigslist.org/nat/sad/d/atlanta-senior-network-engineer/7777777777.html">
+              <div class="title">Senior Network Engineer (duplicate)</div>
+            </a>
+          </li>
+        </ul>"""
+        jobs = clistScraper.parse_jobs(dup_html)
+        links = [j["link"] for j in jobs]
+        self.assertEqual(len(links), len(set(links)))
+
+    def test_bytes_input_accepted(self):
+        # BeautifulSoup handles bytes; parse_jobs must not raise.
+        jobs = clistScraper.parse_jobs(CRAIGSLIST_HTML.encode("utf-8"))
+        self.assertEqual(len(jobs), 2)
+
+
+class DrudgeEdgeTests(unittest.TestCase):
+    def test_empty_html_returns_empty_list(self):
+        self.assertEqual(drudgeScraper.parse_headlines(""), [])
+
+    def test_none_html_returns_empty_list(self):
+        self.assertEqual(drudgeScraper.parse_headlines(None), [])
+
+    def test_all_social_filtered_returns_empty(self):
+        html = (
+            "<html><body>"
+            '<a href="https://twitter.com/drudge">Follow us on Twitter here</a>'
+            '<a href="https://x.com/drudge">Follow us on X platform now</a>'
+            "</body></html>"
+        )
+        self.assertEqual(drudgeScraper.parse_headlines(html), [])
+
+    def test_non_bold_link_not_top(self):
+        # Links outside bold/strong/red-font markup must have top=False.
+        headlines = drudgeScraper.parse_headlines(DRUDGE_HTML)
+        non_top = [h for h in headlines if not h["top"]]
+        self.assertGreater(len(non_top), 0)
+
+    def test_limit_enforced(self):
+        headlines = drudgeScraper.parse_headlines(DRUDGE_HTML, limit=2)
+        self.assertLessEqual(len(headlines), 2)
+
+
+class RCPEdgeTests(unittest.TestCase):
+    def test_empty_html_returns_empty_list(self):
+        self.assertEqual(rcpScraper.parse_headlines(""), [])
+
+    def test_none_html_returns_empty_list(self):
+        self.assertEqual(rcpScraper.parse_headlines(None), [])
+
+    def test_bytes_input_accepted(self):
+        headlines = rcpScraper.parse_headlines(RCP_HTML.encode("utf-8"))
+        self.assertEqual(len(headlines), 3)
+
+    def test_limit_enforced(self):
+        headlines = rcpScraper.parse_headlines(RCP_HTML, limit=1)
+        self.assertLessEqual(len(headlines), 1)
+
+    def test_source_strips_www(self):
+        # Sources should have www. stripped for cleaner display.
+        headlines = rcpScraper.parse_headlines(RCP_HTML)
+        for h in headlines:
+            self.assertFalse(h["source"].startswith("www."), h["source"])

@@ -55,6 +55,8 @@ def parse_jobs(html, limit=MAX_ITEMS):
     # Pure function (no network/IO) so it can be unit-tested against fixtures.
     # Returns dicts with: title, link, price, location, date.
 
+    if html is None:
+        return []
     soup = BeautifulSoup(html, "html.parser")
     jobs = []
     seen = set()
@@ -113,18 +115,22 @@ def scrape():
         jobs = []
 
     # Truncate ('w') so jobs.txt reflects only the current run.
-    with open("jobs.txt", "w", encoding="utf-8") as out:
-        out.write("---------------------\n")
-        out.write("System/Network Admin Job Listings:\n")
-        out.write("---------------------\n")
-        if not jobs:
-            out.write("(no listings found — site layout may have changed)\n")
-        for job in jobs:
-            meta = " · ".join(p for p in (job["price"], job["location"], job["date"]) if p)
-            out.write(job["title"] + "\n")
-            if meta:
-                out.write(meta + "\n")
-            out.write(job["link"] + "\n\n")
+    try:
+        with open("jobs.txt", "w", encoding="utf-8") as out:
+            out.write("---------------------\n")
+            out.write("System/Network Admin Job Listings:\n")
+            out.write("---------------------\n")
+            if not jobs:
+                out.write("(no listings found — site layout may have changed)\n")
+            for job in jobs:
+                meta = " · ".join(p for p in (job["price"], job["location"], job["date"]) if p)
+                out.write(job["title"] + "\n")
+                if meta:
+                    out.write(meta + "\n")
+                out.write(job["link"] + "\n\n")
+    except OSError as e:
+        print(f"[clist] failed to write jobs.txt: {e}")
+        return jobs
 
     print(f"[clist] wrote {len(jobs)} listings to jobs.txt")
     return jobs
