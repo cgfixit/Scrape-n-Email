@@ -31,8 +31,14 @@ logging.basicConfig(
 
 def main():
     logging.info("Starting daily scrape run...")
-    rcpScraper.scrape()
-    clistScraper.scrape()
+    try:
+        rcpScraper.scrape()
+    except Exception as err:
+        logging.error("RCP scraper raised an unexpected error: %s", err)
+    try:
+        clistScraper.scrape()
+    except Exception as err:
+        logging.error("Craigslist scraper raised an unexpected error: %s", err)
     logging.info("Scraping complete. Handing off to mailer...")
 
 

@@ -104,6 +104,8 @@ def parse_headlines(html, base=URL, limit=MAX_ITEMS):
     # containers first, then falls back to article-URL pattern matching so it
     # keeps working even if RCP renames its CSS classes.
 
+    if html is None:
+        return []
     soup = BeautifulSoup(html, "html.parser")
 
     # 1) Preferred: known/likely headline containers. (`[class*='story']`
@@ -140,16 +142,20 @@ def scrape():
         print(f"[rcp] parse failed: {err}")
         headlines = []
 
-    with open('RCPheadlines.txt', 'w+', encoding="utf-8") as outputFile:
-        outputFile.write('--------------\n--------------\nRCP Headlines\n--------------\n--------------\n\n')
-        if not headlines:
-            outputFile.write("(no headlines found — site layout may have changed)\n")
-        for h in headlines:
-            outputFile.write(h["title"] + "\n")
-            if h["source"]:
-                outputFile.write("(" + h["source"] + ")\n")
-            outputFile.write(h["link"] + "\n\n")
-            csv_helper.writer(h["title"], h["link"])
+    try:
+        with open('RCPheadlines.txt', 'w+', encoding="utf-8") as outputFile:
+            outputFile.write('--------------\n--------------\nRCP Headlines\n--------------\n--------------\n\n')
+            if not headlines:
+                outputFile.write("(no headlines found — site layout may have changed)\n")
+            for h in headlines:
+                outputFile.write(h["title"] + "\n")
+                if h["source"]:
+                    outputFile.write("(" + h["source"] + ")\n")
+                outputFile.write(h["link"] + "\n\n")
+                csv_helper.writer(h["title"], h["link"])
+    except OSError as e:
+        print(f"[rcp] failed to write RCPheadlines.txt: {e}")
+        return headlines
 
     print(f"[rcp] wrote {len(headlines)} headlines to RCPheadlines.txt")
     return headlines

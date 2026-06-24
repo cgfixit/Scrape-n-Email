@@ -99,6 +99,8 @@ def parse_headlines(html, limit=MAX_ITEMS):
     # title, link, source, top (bool). Order follows document order, which puts
     # the splash headline first, then the left/center/right columns.
 
+    if html is None:
+        return []
     soup = BeautifulSoup(html, "html.parser")
     headlines = []
     seen = set()
@@ -136,17 +138,21 @@ def scrape():
         print(f"[drudge] parse failed: {err}")
         headlines = []
 
-    with open('DRUDGEheadlines.txt', 'w+', encoding="utf-8") as outputFile:
-        outputFile.write('--------------\n--------------\nDrudge Headlines\n--------------\n--------------\n\n')
-        if not headlines:
-            outputFile.write("(no headlines found — site layout may have changed)\n")
-        for h in headlines:
-            tag = "[TOP] " if h["top"] else ""
-            outputFile.write(tag + h["title"] + "\n")
-            if h["source"]:
-                outputFile.write("(" + h["source"] + ")\n")
-            outputFile.write(h["link"] + "\n\n")
-            csv_helper.writer(h["title"], h["link"])
+    try:
+        with open('DRUDGEheadlines.txt', 'w+', encoding="utf-8") as outputFile:
+            outputFile.write('--------------\n--------------\nDrudge Headlines\n--------------\n--------------\n\n')
+            if not headlines:
+                outputFile.write("(no headlines found — site layout may have changed)\n")
+            for h in headlines:
+                tag = "[TOP] " if h["top"] else ""
+                outputFile.write(tag + h["title"] + "\n")
+                if h["source"]:
+                    outputFile.write("(" + h["source"] + ")\n")
+                outputFile.write(h["link"] + "\n\n")
+                csv_helper.writer(h["title"], h["link"])
+    except OSError as e:
+        print(f"[drudge] failed to write DRUDGEheadlines.txt: {e}")
+        return headlines
 
     print(f"[drudge] wrote {len(headlines)} headlines to DRUDGEheadlines.txt")
     return headlines

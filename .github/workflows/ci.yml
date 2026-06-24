@@ -35,7 +35,7 @@ jobs:
         pip install -r requirements.txt lxml
 
     - name: Run offline tests
-      run: python -m unittest test_scrapers -v
+      run: python -m unittest discover -v -p "test_*.py"
 
     - name: Verify main module imports cleanly
       run: python -c "import main; print('main.py imports successfully')"

@@ -33,8 +33,12 @@ def _attach_file(msg, filepath):
     mime_type, _ = mimetypes.guess_type(filepath)
     maintype, subtype = (mime_type or "application/octet-stream").split("/")
 
-    with open(filepath, "rb") as f:
-        data = f.read()
+    try:
+        with open(filepath, "rb") as f:
+            data = f.read()
+    except OSError as e:
+        print(f"  Warning: could not read attachment '{filepath}': {e}")
+        return False
 
     msg.add_attachment(
         data,
@@ -82,6 +86,12 @@ def send_email(subject, body, attachments):
         return False
     except smtplib.SMTPException as e:
         print(f"  SMTP error sending '{subject}': {e}")
+        return False
+    except (ConnectionRefusedError, ConnectionResetError):
+        print(f"  Error: Mail server refused or reset the connection for '{subject}'.")
+        return False
+    except TimeoutError:
+        print(f"  Error: Connection timed out while sending '{subject}'.")
         return False
     except OSError as e:
         print(f"  Network error sending '{subject}': {e}")
