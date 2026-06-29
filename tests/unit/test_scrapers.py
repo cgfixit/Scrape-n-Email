@@ -9,10 +9,9 @@
 import datetime
 import unittest
 
-import clistScraper
-import rcpScraper
-import drudgeScraper
-
+from scrape_n_email.scrapers import clist as clistScraper  # noqa: N812
+from scrape_n_email.scrapers import drudge as drudgeScraper
+from scrape_n_email.scrapers import rcp as rcpScraper  # noqa: N812
 
 CRAIGSLIST_HTML = """
 <html><body>
@@ -149,8 +148,8 @@ class RCPTests(unittest.TestCase):
         )
 
     def test_filters_nav_and_social(self):
-        self.assertFalse(any("/about.html" in l for l in self.links))
-        self.assertFalse(any("twitter.com" in l for l in self.links))
+        self.assertFalse(any("/about.html" in link for link in self.links))
+        self.assertFalse(any("twitter.com" in link for link in self.links))
 
     def test_dedupes_and_finds_articles(self):
         self.assertEqual(len(self.links), len(set(self.links)))
@@ -161,7 +160,7 @@ class RCPTests(unittest.TestCase):
         # the 'x.com' social-host rule (old substring filter did exactly that).
         html = (
             '<html><body><a href="https://www.netflix.com/news/2026/doc.html">'
-            'Streaming Documentary Sparks National Debate</a></body></html>'
+            "Streaming Documentary Sparks National Debate</a></body></html>"
         )
         links = [h["link"] for h in rcpScraper.parse_headlines(html)]
         self.assertIn("https://www.netflix.com/news/2026/doc.html", links)
@@ -182,6 +181,7 @@ class RCPTests(unittest.TestCase):
 # Edge-case / robustness tests added to complement the baseline tests above.
 # ---------------------------------------------------------------------------
 
+
 class CraigslistEdgeTests(unittest.TestCase):
     def test_empty_html_returns_empty_list(self):
         self.assertEqual(clistScraper.parse_jobs(""), [])
@@ -201,7 +201,9 @@ class CraigslistEdgeTests(unittest.TestCase):
 
     def test_duplicate_links_deduped(self):
         # Inject a second copy of the first listing with the same href.
-        dup_html = CRAIGSLIST_HTML + """
+        dup_html = (
+            CRAIGSLIST_HTML
+            + """
         <ul>
           <li class="cl-static-search-result" title="Senior Network Engineer Dup">
             <a href="https://atlanta.craigslist.org/nat/sad/d/atlanta-senior-network-engineer/7777777777.html">
@@ -209,6 +211,7 @@ class CraigslistEdgeTests(unittest.TestCase):
             </a>
           </li>
         </ul>"""
+        )
         jobs = clistScraper.parse_jobs(dup_html)
         links = [j["link"] for j in jobs]
         self.assertEqual(len(links), len(set(links)))
