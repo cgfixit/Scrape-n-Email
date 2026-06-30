@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 import requests
 import time
 import os
+import datetime
 from urllib.parse import urljoin, urlparse
 import csv_helper
 
@@ -30,7 +31,14 @@ _HEADERS = {
 }
 
 # RCP article/content paths used to recognize real headlines in the fallback.
-_CONTENT_HINTS = ("/articles/", "/video/", "/politics/", "/2024/", "/2025/", "/2026/")
+# Years are computed at import time so the filter stays valid across year boundaries.
+_this_year = datetime.date.today().year
+_CONTENT_HINTS = (
+    "/articles/", "/video/", "/politics/",
+    f"/{_this_year - 1}/",
+    f"/{_this_year}/",
+    f"/{_this_year + 1}/",
+)
 # Social/ad hosts (matched as exact host or true subdomain) and nav path
 # segments (matched against the first path segment, extension stripped) — not
 # loose substrings, so a look-alike like 'netflix.com' isn't matched by 'x.com'.
