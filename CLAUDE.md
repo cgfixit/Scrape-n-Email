@@ -24,7 +24,10 @@ use.
 - `tests/unit/`, `tests/integration/` - pytest suite
 - `pyproject.toml` - build, deps, ruff, mypy, pytest config
 - `.github/workflows/ci.yml` - lint (ruff + mypy) + test matrix
-- `.codex/` - Codex prompts/routines/checklists (Claude mirrors live in `.claude/`)
+- `Dockerfile` - production single-run image; mounts `/data` for output files
+- `requirements.txt` - runtime dep ranges (mirrors `pyproject.toml` deps section)
+- `commands/` - Codex slash commands (`/ponytail`, `/optimize`) — Claude Code equivalents live in `.claude/skills/`
+- `.codex/` - Codex routines and checklists
 
 Generated runtime files: `jobs.txt`, `RCPheadlines.txt`, `DRUDGEheadlines.txt`,
 `RCPlinks.csv`.
@@ -62,9 +65,25 @@ is 80%.
 
 `mailer.py` and `Config` read these. Never commit real values.
 
-- `EMAIL_USER`, `EMAIL_PASS` (Gmail app password)
-- `EMAIL_TO` (comma-separated recipients)
-- Optional: `EMAIL_SUBJECT`, `EMAIL_HOST`, `EMAIL_PORT`
+- `EMAIL_USER` — Gmail address used to send
+- `EMAIL_PASS` — Gmail app password
+- `EMAIL_RECIPIENT` — recipient address (defaults to `EMAIL_USER`)
+- Optional: `SMTP_HOST` (default `smtp.gmail.com`), `SMTP_PORT` (default `587`)
+- Optional: `MAX_RCP_ITEMS`, `MAX_CLIST_ITEMS`, `MAX_DRUDGE_ITEMS` — per-source limits
+- Optional: `RCP_URL`, `CLIST_URL`, `DRUDGE_URL` — override scrape targets
+
+## Docker
+
+```bash
+docker build -t scrape-n-email .
+docker run --rm \
+  -e EMAIL_USER=you@gmail.com \
+  -e EMAIL_PASS=app-password \
+  -v $(pwd)/output:/data \
+  scrape-n-email
+```
+
+Output files (`RCPheadlines.txt`, `jobs.txt`, `RCPlinks.csv`) are written to `/data`.
 
 ## Claude Code Skills
 
@@ -77,7 +96,7 @@ Skills tailored to this repo live in `.claude/skills/`:
   new dependencies.
 
 Invoke with `/ponytail` or `/optimize`. The skill files mirror the Codex
-prompt templates in `.codex/prompts/` so the two agents stay aligned.
+slash commands in `commands/` so Claude Code and Codex stay aligned.
 
 ## House Rules for Edits
 
