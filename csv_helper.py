@@ -64,3 +64,23 @@ def writer(title, link):
     except OSError as e:
         print(f"[csv_helper] Failed to append to RCPlinks.csv: {e}")
         return False
+
+
+def write_rows(rows):
+    """
+    Append multiple (title, link) pairs to RCPlinks.csv in a single file open.
+    Prefer this over calling writer() in a loop — one open/close per batch
+    instead of one per headline.
+    Returns True on success, False on I/O failure.
+    """
+    if not rows:
+        return True
+    try:
+        with open('RCPlinks.csv', 'a', newline='', encoding='utf-8') as f:
+            w = csv.writer(f)
+            for title, link in rows:
+                w.writerow((_csv_safe(title), _csv_safe(link)))
+        return True
+    except OSError as e:
+        print(f"[csv_helper] Failed to append rows to RCPlinks.csv: {e}")
+        return False

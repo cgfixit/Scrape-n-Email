@@ -144,6 +144,42 @@ class CsvFileTests(unittest.TestCase):
             result = csv_helper.writer("Title", "https://x.com/1")
         self.assertFalse(result)
 
+    # ------------------------------------------------------------------
+    # csv_helper.write_rows
+    # ------------------------------------------------------------------
+
+    def test_write_rows_empty_returns_true_without_writing(self):
+        csv_helper.csvinit()
+        result = csv_helper.write_rows([])
+        self.assertTrue(result)
+        rows = self._read_rows()
+        data = [r for r in rows if r and r[0] not in ("HEADLINE", "")]
+        self.assertEqual(len(data), 0)
+
+    def test_write_rows_appends_all_rows_in_one_pass(self):
+        csv_helper.csvinit()
+        pairs = [("Story One", "https://a.com/1"), ("Story Two", "https://b.com/2")]
+        result = csv_helper.write_rows(pairs)
+        self.assertTrue(result)
+        rows = self._read_rows()
+        data = [r for r in rows if r and r[0] not in ("HEADLINE", "")]
+        self.assertEqual(len(data), 2)
+        self.assertEqual(data[0], ["Story One", "https://a.com/1"])
+        self.assertEqual(data[1], ["Story Two", "https://b.com/2"])
+
+    def test_write_rows_neutralizes_formula_injection(self):
+        csv_helper.csvinit()
+        csv_helper.write_rows([("=ATTACK()", "https://safe.com/ok")])
+        rows = self._read_rows()
+        data = [r for r in rows if r and r[0] not in ("HEADLINE", "")]
+        self.assertEqual(data[0][0], "'=ATTACK()")
+
+    def test_write_rows_returns_false_on_permission_error(self):
+        csv_helper.csvinit()
+        with patch("builtins.open", side_effect=OSError("permission denied")):
+            result = csv_helper.write_rows([("Title", "https://x.com/1")])
+        self.assertFalse(result)
+
 
 # ---------------------------------------------------------------------------
 # mailer._attach_file
