@@ -9,7 +9,7 @@ This repo is **primarily maintained for personal use**, but thoughtful contribut
 ## Quick Start for Contributors
 
 ### Prerequisites
-- Python 3.8+
+- Python 3.10+
 - `requests` and `beautifulsoup4` (see `requirements.txt`)
 
 ### Setup
