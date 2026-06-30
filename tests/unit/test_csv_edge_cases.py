@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import scrape_n_email.csv as csv_mod
-from scrape_n_email.csv import _csv_safe, append_row, init_csv
+from scrape_n_email.csv import _csv_safe, append_row, append_rows, init_csv
 
 
 class TestCsvSafeExtended:
@@ -56,6 +56,28 @@ class TestAppendRowErrors:
             csv_mod.CSV_PATH = tmp_path / "test.csv"
             init_csv(force=True)
             assert append_row("=CMD()", "+http://evil.com") is True
+            content = csv_mod.CSV_PATH.read_text(encoding="utf-8")
+            assert "'=CMD()" in content
+            assert "'+http://evil.com" in content
+        finally:
+            csv_mod.CSV_PATH = orig
+
+
+class TestAppendRowsErrors:
+    def test_append_rows_oserror(self, tmp_path: Path) -> None:
+        orig = csv_mod.CSV_PATH
+        try:
+            csv_mod.CSV_PATH = tmp_path / "nodir" / "missing.csv"
+            assert append_rows([("title", "link")]) is False
+        finally:
+            csv_mod.CSV_PATH = orig
+
+    def test_append_rows_with_formula_injection_values(self, tmp_path: Path) -> None:
+        orig = csv_mod.CSV_PATH
+        try:
+            csv_mod.CSV_PATH = tmp_path / "test.csv"
+            init_csv(force=True)
+            assert append_rows([("=CMD()", "+http://evil.com")]) is True
             content = csv_mod.CSV_PATH.read_text(encoding="utf-8")
             assert "'=CMD()" in content
             assert "'+http://evil.com" in content

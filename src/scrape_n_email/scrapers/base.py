@@ -7,16 +7,8 @@ import time
 
 import requests
 from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
 
 logger = logging.getLogger("scrape_n_email.scrapers")
-
-_RETRY = Retry(
-    total=3,
-    backoff_factor=1,
-    status_forcelist=[429, 500, 502, 503, 504],
-    allowed_methods=["GET"],
-)
 
 _DEFAULT_HEADERS: dict[str, str] = {
     "User-Agent": (
@@ -33,15 +25,16 @@ _session: requests.Session | None = None
 
 
 def get_session() -> requests.Session:
-    """Return a shared requests Session with retry adapter and browser headers."""
+    """Return a shared, pooled requests Session with browser headers."""
     global _session
     if _session is None:
         _session = requests.Session()
         _session.headers.update(_DEFAULT_HEADERS)
-        adapter = HTTPAdapter(max_retries=_RETRY, pool_connections=10, pool_maxsize=10)
+        # No adapter Retry: get() below retries w/ backoff; stacking both multiplied attempts.
+        adapter = HTTPAdapter(pool_connections=10, pool_maxsize=10)
         _session.mount("https://", adapter)
         _session.mount("http://", adapter)
-        logger.debug("Created new HTTP session with retry adapter")
+        logger.debug("Created new HTTP session")
     return _session
 
 

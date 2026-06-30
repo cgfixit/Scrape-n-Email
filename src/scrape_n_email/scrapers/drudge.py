@@ -10,7 +10,7 @@ import requests
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
-from scrape_n_email.csv import append_row
+from scrape_n_email.csv import append_rows
 from scrape_n_email.scrapers.base import get
 
 logger = logging.getLogger("scrape_n_email.scrapers.drudge")
@@ -116,10 +116,12 @@ def scrape() -> list[dict[str, str | bool]]:
                 if h["source"]:
                     output_file.write("(" + str(h["source"]) + ")\n")
                 output_file.write(str(h["link"]) + "\n\n")
-                append_row(str(h["title"]), str(h["link"]))
     except OSError as e:
         logger.error("Failed to write DRUDGEheadlines.txt: %s", e)
         return headlines
+
+    if headlines:
+        append_rows((str(h["title"]), str(h["link"])) for h in headlines)
 
     logger.info("Wrote %d headlines to DRUDGEheadlines.txt", len(headlines))
     return headlines
