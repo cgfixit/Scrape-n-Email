@@ -10,7 +10,7 @@ import requests
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
-from scrape_n_email.csv import append_row, init_csv
+from scrape_n_email.csv import append_rows, init_csv
 from scrape_n_email.scrapers.base import get
 
 logger = logging.getLogger("scrape_n_email.scrapers.rcp")
@@ -112,10 +112,12 @@ def scrape() -> list[dict[str, str]]:
                 if h["source"]:
                     output_file.write("(" + h["source"] + ")\n")
                 output_file.write(h["link"] + "\n\n")
-                append_row(h["title"], h["link"])
     except OSError as e:
         logger.error("Failed to write RCPheadlines.txt: %s", e)
         return headlines
+
+    if headlines:
+        append_rows((h["title"], h["link"]) for h in headlines)
 
     logger.info("Wrote %d headlines to RCPheadlines.txt", len(headlines))
     return headlines

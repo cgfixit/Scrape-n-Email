@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import logging
+from collections.abc import Iterable
 from pathlib import Path
 
 logger = logging.getLogger("scrape_n_email.csv")
@@ -47,6 +48,18 @@ def append_row(title: str, link: str) -> bool:
         with CSV_PATH.open("a", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow((_csv_safe(title), _csv_safe(link)))
+        return True
+    except OSError as e:
+        logger.error("Failed to append to %s: %s", CSV_PATH, e)
+        return False
+
+
+def append_rows(rows: Iterable[tuple[str, str]]) -> bool:
+    """Append multiple (title, link) rows to RCPlinks.csv in a single file open."""
+    try:
+        with CSV_PATH.open("a", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerows((_csv_safe(title), _csv_safe(link)) for title, link in rows)
         return True
     except OSError as e:
         logger.error("Failed to append to %s: %s", CSV_PATH, e)

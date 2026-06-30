@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from scrape_n_email.csv import _csv_safe, append_row, init_csv
+from scrape_n_email.csv import _csv_safe, append_row, append_rows, init_csv
 
 
 class TestCsvSafe:
@@ -54,5 +54,20 @@ class TestInitCsv:
             assert init_csv(force=True) is True
             assert append_row("Title", "https://example.com") is True
             assert "Title,https://example.com" in csv_mod.CSV_PATH.read_text(encoding="utf-8")
+        finally:
+            csv_mod.CSV_PATH = orig_path
+
+    def test_append_rows_writes_all_in_one_open(self, tmp_path: Path) -> None:
+        import scrape_n_email.csv as csv_mod
+
+        orig_path = csv_mod.CSV_PATH
+        try:
+            csv_mod.CSV_PATH = tmp_path / "test.csv"
+            assert init_csv(force=True) is True
+            rows = [("Title One", "https://example.com/1"), ("Title Two", "https://example.com/2")]
+            assert append_rows(rows) is True
+            content = csv_mod.CSV_PATH.read_text(encoding="utf-8")
+            assert "Title One,https://example.com/1" in content
+            assert "Title Two,https://example.com/2" in content
         finally:
             csv_mod.CSV_PATH = orig_path
