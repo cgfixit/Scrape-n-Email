@@ -14,6 +14,7 @@ this is a small personal automation script, not a library.
 """
 
 import csv
+import logging
 import os
 
 
@@ -43,10 +44,10 @@ def csvinit():
             writer.writerow(('HEADLINE', 'URL'))
             # Keep a blank row for visual separation (legacy behavior)
             writer.writerow(('', ''))
-        print("[csv_helper] Initialized RCPlinks.csv with header")
+        logging.info("[csv_helper] Initialized RCPlinks.csv with header")
         return True
     except OSError as e:
-        print(f"[csv_helper] Failed to initialize RCPlinks.csv: {e}")
+        logging.warning("[csv_helper] Failed to initialize RCPlinks.csv: %s", e)
         return False
 
 
@@ -62,7 +63,7 @@ def writer(title, link):
             w.writerow((_csv_safe(title), _csv_safe(link)))
         return True
     except OSError as e:
-        print(f"[csv_helper] Failed to append to RCPlinks.csv: {e}")
+        logging.warning("[csv_helper] Failed to append to RCPlinks.csv: %s", e)
         return False
 
 
@@ -82,5 +83,5 @@ def write_rows(rows):
                 w.writerow((_csv_safe(title), _csv_safe(link)))
         return True
     except OSError as e:
-        print(f"[csv_helper] Failed to append rows to RCPlinks.csv: {e}")
+        logging.warning("[csv_helper] Failed to append rows to RCPlinks.csv: %s", e)
         return False
