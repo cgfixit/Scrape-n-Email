@@ -22,6 +22,8 @@ Use `.codex/` to help future Codex agents work safely in this small Python scrap
 - `prompts/implementation-plan.md`
 - `prompts/review-diff.md`
 - `prompts/release-notes.md`
+- `prompts/ponytail.md` - minimal-diff prompt for lazy, dependency-light changes.
+- `prompts/optimize.md` - small, measurable cleanup or performance prompt.
 
 Each prompt references `AGENTS.md`; copy one into a Codex prompt and fill in the placeholders.
 
