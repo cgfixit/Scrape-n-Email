@@ -78,3 +78,44 @@ python -m unittest test_scrapers -v
 
 ```bash
 # one-off (set env vars first!)
+python main.py
+
+# scheduled (Windows example)
+schtasks /Create /SC DAILY /TN "ScrapeNEmail" /TR "C:\\path\\to\\python.exe C:\\path\\to\\main.py" /ST 07:00
+```
+
+### File Overview (Fixed Version)
+
+| File                | Purpose                                                                 | Changed? |
+|---------------------|-------------------------------------------------------------------------|----------|
+| `csv_helper.py`     | New. CSV header init + safe append writer. No circular deps.            | **NEW**  |
+| `clistScraper.py`   | Atlanta Craigslist sysadmin jobs (`/search/sad`)                        | Minor (encoding) |
+| `drudgeScraper.py`  | Drudge Report parser + legacy standalone runner (now uses csv_helper)   | Yes (imports + calls) |
+| `rcpScraper.py`     | RealClearPolitics headlines + auto CSV header + uses csv_helper         | Yes (init logic + import) |
+| `main.py`           | Orchestrator (rcp + clist → mailer). Clean logging, no Windows popup.   | Yes      |
+| `mailer.py`         | Gmail SMTP + attachments (pure stdlib)                                  | No       |
+| `test_scrapers.py`  | Offline unit tests for all parse_* functions                            | No (still passes) |
+| `requirements.txt`  | requests + beautifulsoup4                                               | Minor    |
+| `.gitignore`        | Python + generated file hygiene                                         | **NEW**  |
+| `README.md`         | This file                                                               | Updated  |
+
+### Remaining Caveats (honest)
+
+- Live scraping still depends on the sites not changing their HTML too aggressively and your egress IP not being blocked. The robust headers + retries + fallbacks help a lot.
+- `RCPlinks.csv` now grows over time (append-only design). If you want daily rotation or size limits, add a small cleanup step in `main.py` or `rcpScraper.scrape()`.
+- Drudge scraping is present but dormant in the daily `main.py` flow. If you want headlines from Drudge in the email too, add `import drudgeScraper; drudgeScraper.scrape()` in `main()` and update the mailer to attach `DRUDGEheadlines.txt`.
+
+### Why these fixes matter
+
+The original had classic small-project tech debt:
+- Circular imports (fragile on reload / certain Python versions)
+- First-run CSV without header (silent data quality issue)
+- Non-portable "success popup" that only worked on one dev's Windows box
+
+This fixed edition is what you would actually want to put in production / schedule / share with a teammate or future self.
+
+---
+
+*Christopher Grady · @cgfixit · cgfixit.com · June 2026 (fixed edition)*
+
+Original repo: https://github.com/CGFixIT/Scrape-n-Email
