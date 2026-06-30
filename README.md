@@ -37,20 +37,17 @@ main.py
 
 > **About the `drudgeScraper` module name:** kept for historical reasons and because the Drudge parsing logic is still useful/standalone. The CSV code that used to live here is now centralized in `csv_helper.py`.
 
-### How I use it daily
+### How you can use this:
 
-This is a lightweight personal automation that runs on my Windows machine every morning.
+This is a lightweight personal automation that runs on a Windows (or Linux with minor tweaks) machine ad hoc or via cron/task scheduler.
 
-- It triggers automatically at 7:00 AM via Windows Task Scheduler.
-- I get two separate emails:
+- It (hypothetically) triggers automatically at 7:00 AM via Windows Task Scheduler.
+- You get two separate emails:
   - **Daily News** — Top RealClearPolitics headlines + a growing `RCPlinks.csv` archive of links.
   - **Daily Jobs** — Atlanta Craigslist sysadmin / ops / infrastructure listings.
-- The jobs email lets me stay passively aware of the local market without manually checking Craigslist every day.
 - The news digest gives a quick, curated view of political and current events from a site whose aggregation style I like.
 - Over time the CSV becomes a simple personal searchable archive of interesting links.
-- When sites change layout I update the scraper; the offline tests in `test_scrapers.py` usually surface regressions quickly.
-
-It stays small and focused on my actual daily workflow rather than trying to be a general tool.
+- When sites change layout code needs updates to the scraper; the offline tests in `test_scrapers.py` usually surface regressions quickly.
 
 ### Setup (same as before, plus new file)
 
@@ -111,8 +108,6 @@ The original had classic small-project tech debt:
 - Circular imports (fragile on reload / certain Python versions)
 - First-run CSV without header (silent data quality issue)
 - Non-portable "success popup" that only worked on one dev's Windows box
-
-This fixed edition is what you would actually want to put in production / schedule / share with a teammate or future self.
 
 ---
 
