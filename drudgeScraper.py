@@ -149,10 +149,12 @@ def scrape():
                 if h["source"]:
                     outputFile.write("(" + h["source"] + ")\n")
                 outputFile.write(h["link"] + "\n\n")
-                csv_helper.writer(h["title"], h["link"])
     except OSError as e:
         print(f"[drudge] failed to write DRUDGEheadlines.txt: {e}")
         return headlines
+
+    # Write all CSV rows in one file open, independent of the txt write above.
+    csv_helper.write_rows([(h["title"], h["link"]) for h in headlines])
 
     print(f"[drudge] wrote {len(headlines)} headlines to DRUDGEheadlines.txt")
     return headlines
