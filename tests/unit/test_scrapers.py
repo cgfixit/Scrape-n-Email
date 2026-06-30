@@ -275,11 +275,11 @@ class RCPEdgeTests(unittest.TestCase):
         # filter keeps working across the year boundary without a code change.
         next_year = datetime.date.today().year + 1
         html = (
-            f'<html><body>'
+            f"<html><body>"
             f'<a href="https://www.realclearpolitics.com/articles/{next_year}/'
             f'01/01/headline_story_worth_reading.html">'
-            f'Important Breaking Headline Worth Reading Here</a>'
-            f'</body></html>'
+            f"Important Breaking Headline Worth Reading Here</a>"
+            f"</body></html>"
         )
         headlines = rcpScraper.parse_headlines(html)
         self.assertGreater(len(headlines), 0, f"/{next_year}/ URL not matched by _CONTENT_HINTS")

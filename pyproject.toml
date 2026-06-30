@@ -47,7 +47,7 @@ warn_return_any = true
 show_error_codes = true
 
 [[tool.mypy.overrides]]
-module = ["bs4", "bs4.*"]
+module = ["bs4", "bs4.*", "requests", "requests.*", "urllib3", "urllib3.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
