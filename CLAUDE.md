@@ -26,7 +26,8 @@ use.
 - `.github/workflows/ci.yml` - lint (ruff + mypy) + test matrix
 - `Dockerfile` - production single-run image; mounts `/data` for output files
 - `requirements.txt` - runtime dep ranges (mirrors `pyproject.toml` deps section)
-- `commands/` - Codex slash commands (`/ponytail`, `/optimize`) — Claude Code equivalents live in `.claude/skills/`
+- `.claude/commands/` - slash commands for Claude Code (`.md`) and Codex (`.toml`)
+- `.claude/skills/` - richly-documented skill templates (`/ponytail`, `/optimize`)
 - `.codex/` - Codex routines and checklists
 
 Generated runtime files: `jobs.txt`, `RCPheadlines.txt`, `DRUDGEheadlines.txt`,
@@ -95,8 +96,10 @@ Skills tailored to this repo live in `.claude/skills/`:
   a small, measurable improvement. Prefer deletion, reuse, and stdlib over
   new dependencies.
 
-Invoke with `/ponytail` or `/optimize`. The skill files mirror the Codex
-slash commands in `commands/` so Claude Code and Codex stay aligned.
+Invoke with `/ponytail` or `/optimize`. Skill files (`.claude/skills/`) are the richly-documented
+templates; lightweight command files (`.claude/commands/`) let you invoke the same workflow with
+an inline task description. Both are kept in sync with the Codex equivalents (`.toml` files in
+`.claude/commands/`).
 
 ## House Rules for Edits
 
