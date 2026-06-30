@@ -17,12 +17,12 @@ The repo has been modernized to remove circular imports, centralize CSV writing 
 
 ## Tech Stack Detected
 
-- Language/runtime: Python. CI tests Python 3.10, 3.11, and 3.12 on Ubuntu and Windows.
+- Language/runtime: Python. CI tests Python 3.10, 3.11, 3.12, and 3.13 on Ubuntu and Windows.
 - Dependencies: `requests`, `beautifulsoup4`, `lxml`.
 - Tests: standard-library `unittest`; no pytest config detected.
 - CI: GitHub Actions in `.github/workflows/ci.yml`.
 - Packaging/build: no `pyproject.toml`, `setup.py`, package lockfile, Makefile, justfile, Dockerfile, or devcontainer detected.
-- AI/tooling instructions: no pre-existing `AGENTS.md`, `.codex/`, `CLAUDE.md`, `.claude/`, `.github/copilot-instructions.md`, `.cursor/`, or `.windsurfrules` detected before this setup pass.
+- AI/tooling instructions: Codex setup lives in `AGENTS.md` and `.codex/`; prompt templates and routines are listed in `.codex/README.md`.
 
 ## Repository Layout
 
