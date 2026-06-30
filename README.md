@@ -75,10 +75,11 @@ python -m unittest test_scrapers -v
 
 ```bash
 # one-off (set env vars first!)
-python main.py
+python -m scrape_n_email          # preferred (package entry point)
+python main.py                    # legacy shim — still works for existing scripts
 
 # scheduled (Windows example)
-schtasks /Create /SC DAILY /TN "ScrapeNEmail" /TR "C:\\path\\to\\python.exe C:\\path\\to\\main.py" /ST 07:00
+schtasks /Create /SC DAILY /TN "ScrapeNEmail" /TR "C:\\path\\to\\python.exe -m scrape_n_email" /ST 07:00
 ```
 
 ### File Overview (Fixed Version)
