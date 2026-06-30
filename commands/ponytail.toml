@@ -1,0 +1,2 @@
+description = "Switch to minimal-diff mode for Scrape-n-Email tasks"
+prompt = "Read AGENTS.md first. Use ponytail mode for this Scrape-n-Email task. User context: {{args}}. Keep the smallest working diff. Reuse existing helpers, stdlib, and platform features before adding code or dependencies. Avoid broad abstractions. Preserve offline tests, CSV formula-injection safety, generated-file hygiene, and SMTP secret handling. Mark deliberate simplifications with a ponytail: comment when useful."

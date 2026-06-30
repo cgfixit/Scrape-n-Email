@@ -8,6 +8,7 @@ Canonical references:
 - `CONTRIBUTING.md` for contributor workflow, style, tests, and PR expectations.
 - `.github/workflows/ci.yml` for the exact CI test matrix.
 - `.codex/README.md` for Codex routines, prompts, and checklists.
+- `commands/` for repo-local Codex slash commands.
 
 ## Project Overview
 
@@ -22,7 +23,7 @@ The repo has been modernized to remove circular imports, centralize CSV writing 
 - Tests: standard-library `unittest`; no pytest config detected.
 - CI: GitHub Actions in `.github/workflows/ci.yml`.
 - Packaging/build: no `pyproject.toml`, `setup.py`, package lockfile, Makefile, justfile, Dockerfile, or devcontainer detected.
-- AI/tooling instructions: Codex setup lives in `AGENTS.md` and `.codex/`; prompt templates and routines are listed in `.codex/README.md`.
+- AI/tooling instructions: Codex setup lives in `AGENTS.md`, `.codex/`, and `commands/`; routines and checklists are listed in `.codex/README.md`.
 
 ## Repository Layout
 

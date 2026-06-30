@@ -1,0 +1,2 @@
+description = "Optimize or simplify a Scrape-n-Email task with tight scope"
+prompt = "Read AGENTS.md first. Optimize this Scrape-n-Email task. User context: {{args}}. Keep the scope tight. Prefer deletion, reuse, stdlib, and measurable improvements over new abstractions. Preserve offline tests, CSV formula-injection safety, generated-file hygiene, and SMTP secret handling. State what you are intentionally not changing."

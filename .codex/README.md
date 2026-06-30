@@ -1,6 +1,6 @@
 # `.codex/`
 
-This folder contains Codex-specific operating material for Scrape-n-Email. Repo-wide instructions belong in `AGENTS.md`; task-specific playbooks, prompts, and checklists live here.
+This folder contains Codex-specific operating material for Scrape-n-Email. Repo-wide instructions belong in `AGENTS.md`; task-specific playbooks, prompts, and checklists live here. Runnable Codex slash commands live in the repo-root `commands/` directory.
 
 ## Purpose
 
@@ -22,10 +22,13 @@ Use `.codex/` to help future Codex agents work safely in this small Python scrap
 - `prompts/implementation-plan.md`
 - `prompts/review-diff.md`
 - `prompts/release-notes.md`
-- `prompts/ponytail.md` - minimal-diff prompt for lazy, dependency-light changes.
-- `prompts/optimize.md` - small, measurable cleanup or performance prompt.
 
 Each prompt references `AGENTS.md`; copy one into a Codex prompt and fill in the placeholders.
+
+## Commands
+
+- `commands/ponytail.toml` - switch into minimal-diff, dependency-light repo mode.
+- `commands/optimize.toml` - focus a task on tight, measurable cleanup or improvement.
 
 ## Checklists
 
